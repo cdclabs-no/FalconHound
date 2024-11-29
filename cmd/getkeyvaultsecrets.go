@@ -11,14 +11,30 @@ import (
 )
 
 func GetSecretFromAzureKeyVault(keyVaultName string, secretName string) (string, error) {
-	// Create a new DefaultAzureCredential
-	cred, err := azidentity.NewClientSecretCredential(viper.GetString("keyvault.tenantID"), viper.GetString("keyvault.appID"), viper.GetString("keyvault.appSecret"), nil)
-	// cred, err := azidentity.NewDefaultAzureCredential(nil)
+	// Declare a credential variable
+	var cred azidentity.TokenCredential
+	var err error
+
+	// Check if keyvault.appID or keyvault.appSecret is empty
+	appID := viper.GetString("keyvault.appID")
+	appSecret := viper.GetString("keyvault.appSecret")
+	tenantID := viper.GetString("keyvault.tenantID")
+
+	if appID == "" || appSecret == "" {
+		// Use DefaultAzureCredential if appID or appSecret is empty
+		log.Println("Using DefaultAzureCredential to authenticate to the KeyVault.")
+		cred, err = azidentity.NewDefaultAzureCredential(nil)
+	} else {
+		// Use ClientSecretCredential if appID and appSecret are provided
+		log.Println("Using ClientSecretCredential to authenticate to the KeyVault.")
+		cred, err = azidentity.NewClientSecretCredential(tenantID, appID, appSecret, nil)
+	}
+
 	if err != nil {
 		log.Fatalf("Failed to create the credentials: %v", err)
 	}
 
-	// Create a new client using the DefaultAzureCredential.
+	// Create a new client using the credentials
 	client, err := azsecrets.NewClient(keyVaultName, cred, nil)
 	if err != nil {
 		log.Fatalf("Failed to create the client: %v", err)
@@ -32,3 +48,4 @@ func GetSecretFromAzureKeyVault(keyVaultName string, secretName string) (string,
 
 	return *secretResponse.Value, nil
 }
+
