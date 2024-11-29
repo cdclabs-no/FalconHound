@@ -8,6 +8,8 @@
 # Add your Keyvault information here
 # This is optional, when used, FalconHound will pull the
 # API keys from Keyvault instead of this file
+# Client secret credential is used if  appID and 
+# appSecret is set. Otherwise Default Credentials are used.  
 # start with the -keyvault flag
 ################################################
 keyvault:

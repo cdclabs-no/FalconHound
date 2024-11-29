@@ -26,7 +26,7 @@ Creating a new app registration is well [documented online](https://learn.micros
 This step is optional. It depends on where you want to store and maintain your credentials.
 
 Obviously, if you decide to go the Keyvault route you will need to create one.
-On top of that you'll need to assign the app registration the following role:
+On top of that you'll need to assign the app registration or managed identity the following role:
 
 `Key Vault Secrets User`
 
